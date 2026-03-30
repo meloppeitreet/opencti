@@ -53,7 +53,8 @@ export const uniqueArray = <T>(items: IterableIterator<T> | Array<T>) => Array.f
  * @param fullpath - The current full pathname as returned by useLocation().pathname.
  * Should contain no query params nor hash param.
  * @param basePath - The closest path to root where the <Tabs> component is rendered.
- * @returns The current tab value.
+ * @returns The current tab value or false if fullpath === basePath to match
+ * with the value awaited by MuiTabs
  *
  * @example
  * ```
@@ -69,7 +70,8 @@ export const getCurrentTab = (fullpath: string, basePath: string) => {
     subpath = subpath.substring(1);
   }
   const nextSlashPos = subpath.indexOf('/');
-  return nextSlashPos >= 0 ? subpath.substring(0, nextSlashPos) : subpath;
+  const value = nextSlashPos >= 0 ? subpath.substring(0, nextSlashPos) : subpath;
+  return value.length ? value : false;
 };
 
 export const getPaddingRight = (locationPath: string, entityBasePath: string, applyKnowledgePadding = true) => {
