@@ -121,16 +121,16 @@ const computeUserAndCollection = async (req, res, { context, user, id }) => {
     sendErrorStatus(req, res, 401);
     return { error: res.statusMessage };
   }
-  // Check if collection exist and started
-  if (!collection.stream_live) {
-    res.statusMessage = 'This live stream is stopped';
-    sendErrorStatus(req, res, 410);
-    logApp.info('This live stream is stopped but still requested', { streamCollectionId: id });
-    return { error: 'This live stream is stopped' };
-  }
   const streamFilters = JSON.parse(collection.filters);
   // If bypass or public stream
   if (collection.stream_public) {
+    // Check if collection is started (only reveal stream status to authorized users)
+    if (!collection.stream_live) {
+      res.statusMessage = 'This live stream is stopped';
+      sendErrorStatus(req, res, 410);
+      logApp.info('This live stream is stopped but still requested', { streamCollectionId: id });
+      return { error: 'This live stream is stopped' };
+    }
     return { streamFilters, collection };
   }
   // Access is restricted, user must be authenticated
@@ -163,6 +163,13 @@ const computeUserAndCollection = async (req, res, { context, user, id }) => {
       return { error: res.statusMessage };
     }
   }
+  // Check if collection is started (only reveal stream status to authorized users)
+  if (!collection.stream_live) {
+    res.statusMessage = 'This live stream is stopped';
+    sendErrorStatus(req, res, 410);
+    logApp.info('This live stream is stopped but still requested', { streamCollectionId: id });
+    return { error: 'This live stream is stopped' };
+  }
   return { streamFilters, collection };
 };
 
@@ -170,6 +177,18 @@ const authenticateForPublic = async (req, res, next) => {
   const context = await createAuthenticatedContext(req, res, 'stream_authenticate');
   req.context = context;
   req.expirationTime = utcDate().add(1, 'days').toDate();
+  // For unauthenticated users, pre-check if the stream is public before entering
+  // computeUserAndCollection. This prevents SYSTEM_USER (used as anonymous fallback)
+  // from passing auth checks and leaking stream status (e.g., 410) to unauthenticated users.
+  if (!context.user) {
+    const allCollections = await getEntitiesListFromCache(context, SYSTEM_USER, ENTITY_TYPE_STREAM_COLLECTION);
+    const preCheckCollection = allCollections.find((c) => c.id === req.params.id);
+    if (!preCheckCollection || !preCheckCollection.stream_public) {
+      res.statusMessage = 'You are not authenticated, please check your credentials';
+      sendErrorStatus(req, res, 401);
+      return;
+    }
+  }
   const { error, collection, streamFilters } = await computeUserAndCollection(req, res, {
     context,
     user: context.user ?? SYSTEM_USER,
