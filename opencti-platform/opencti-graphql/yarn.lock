@@ -2803,14 +2803,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mistralai/mistralai@npm:1.7.2":
-  version: 1.7.2
-  resolution: "@mistralai/mistralai@npm:1.7.2"
+"@mistralai/mistralai@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@mistralai/mistralai@npm:2.1.2"
   dependencies:
-    zod-to-json-schema: "npm:^3.24.1"
-  peerDependencies:
-    zod: ">= 3"
-  checksum: 10c0/051f77d8d50918153d313c901e5cae89148e6f9e60a3dc00d2afe60e99aeb282122d2d49d1cc11196b329cebbf6b6f2537653c0ba5c5af0d2efc7616318e9cf2
+    ws: "npm:^8.18.0"
+    zod: "npm:^3.25.0 || ^4.0.0"
+    zod-to-json-schema: "npm:^3.25.0"
+  checksum: 10c0/b393013093af85736fd7a176cae24bf548f74afd0e261a0b1ec581a29d1dafb39fe68737dd556b6a609e6609a4912ea1d668ecb6c159213e72a3450b343e66bb
   languageName: node
   linkType: hard
 
@@ -10616,7 +10616,7 @@ __metadata:
     "@langchain/openai": "npm:0.5.5"
     "@lezer/javascript": "npm:1.5.4"
     "@luckycatfactory/esbuild-graphql-loader": "npm:3.8.1"
-    "@mistralai/mistralai": "npm:1.7.2"
+    "@mistralai/mistralai": "npm:2.1.2"
     "@noble/ed25519": "npm:3.0.1"
     "@node-saml/passport-saml": "npm:5.1.0"
     "@opensearch-project/opensearch": "npm:3.5.1"
@@ -13832,7 +13832,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-to-json-schema@npm:^3.22.3, zod-to-json-schema@npm:^3.22.4, zod-to-json-schema@npm:^3.24.1":
+"zod-to-json-schema@npm:^3.22.3, zod-to-json-schema@npm:^3.22.4, zod-to-json-schema@npm:^3.24.1, zod-to-json-schema@npm:^3.25.0":
   version: 3.25.2
   resolution: "zod-to-json-schema@npm:3.25.2"
   peerDependencies:
